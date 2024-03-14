@@ -18,7 +18,7 @@ jobs:
       - run: vsce package
       - uses: actions/upload-artifact@v2
         with:
-          name: mermaid-markdown-preview.vsix
+          name: ${{ github.ref }}.vsix
           path: ./*.vsix
       - name: Create Release
         id: create_release
@@ -39,6 +39,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./*.vsix
+          asset_path: ${{ github.ref }}.vsix
           asset_name: mermaid-markdown-preview.vsix
           asset_content_type: application/vsix

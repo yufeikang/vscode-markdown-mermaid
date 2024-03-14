@@ -16,10 +16,6 @@ jobs:
       - run: npm install
       - run: npm install -g vsce
       - run: vsce package
-      - uses: actions/upload-artifact@v2
-        with:
-          name: ${{ github.ref }}.vsix
-          path: ./*.vsix
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1

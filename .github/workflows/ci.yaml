@@ -15,17 +15,23 @@ jobs:
           node-version: '20.x'
       - run: npm install
       - run: npm install -g vsce
+      - run: |
+          version=$(node -p "require('./package.json').version")
+          echo "VERSION=${version}" >> $GITHUB_ENV
       - run: vsce package
+      - name: Get Changelog
+        id: get-changelog
+        run: |
+          awk 'BEGIN{block=""; lastBlock=""} /^##/{if(block!=""){lastBlock=block; block=""}} {block=block?block ORS $0:$0} END{print lastBlock}' CHANGELOG.md  > .changelog.md
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          body: |
-            Changes in this Release
+          tag_name: v${{ env.VERSION }}
+          release_name: Release ${{ env.VERSION }}
+          body_path: .changelog.md
           draft: false
           prerelease: false
       - name: Upload Release Asset
@@ -35,6 +41,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ github.ref }}.vsix
+          asset_path: markdown-mermaid-${{ env.VERSION }}.vsix
           asset_name: mermaid-markdown-preview.vsix
           asset_content_type: application/vsix

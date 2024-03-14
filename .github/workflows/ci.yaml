@@ -23,17 +23,10 @@ jobs:
         id: get-changelog
         run: |
           awk 'BEGIN{block=""; lastBlock=""} /^##/{if(block!=""){lastBlock=block; block=""}} {block=block?block ORS $0:$0} END{print lastBlock}' CHANGELOG.md  > .changelog.md
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
+      - name: create release by gh
+        run: gh release create v${{ env.VERSION }} -F .changelog.md
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: v${{ env.VERSION }}
-          release_name: Release ${{ env.VERSION }}
-          body_path: .changelog.md
-          draft: false
-          prerelease: false
       - name: Upload Release Asset
         id: upload-release-asset
         uses: actions/upload-release-asset@v1

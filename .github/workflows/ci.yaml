@@ -1,9 +1,8 @@
 # on commit to master
 on:
   push:
-    branches:
-      - master
-
+    tags:
+      - "*"
 
 name: Build vsix file
 jobs:

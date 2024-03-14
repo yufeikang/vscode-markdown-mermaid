@@ -18,7 +18,7 @@ jobs:
       - run: vsce package
       - uses: actions/upload-artifact@v2
         with:
-          name: vsix
+          name: mermaid-markdown-preview.vsix
           path: ./*.vsix
       - name: Create Release
         id: create_release
